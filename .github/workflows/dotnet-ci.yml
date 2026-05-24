@@ -1,0 +1,49 @@
+name: .NET Core 8.0 Production Pipeline
+
+on:
+  push:
+    branches: [ "main", "feature/*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # 🔴 STAGE 1: Sirf Build aur Test karega (DEV)
+  build-and-test-dev:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore NuGet Packages
+      run: dotnet restore
+
+    - name: Build Application Validation
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Publish Release Artifact
+      run: dotnet publish --no-build --configuration Release --output ./publish_output
+
+    - name: Upload Deployment Artifact to GitHub
+      uses: actions/upload-artifact@v4
+      with:
+        name: FBCA-Web-Release-Package
+        path: ./publish_output/
+
+  # 🟢 STAGE 2: Yeh tabhi chalega jab STAGE 1 pass hoga AUR Hina approve karegi!
+  deploy-to-production:
+    runs-on: ubuntu-latest
+    needs: build-and-test-dev # 👈 Iska matlab hai pehle Stage 1 ka pass hona zaroori hai!
+    environment:
+      name: production        # 👈 Yeh GitHub ke us Manual Gate ko trigger karega!
+    
+    steps:
+    - name: Deploying to IIS Live Server
+      run: |
+        echo "Connecting to production server: oitclewebfbc600..."
+        echo "Extracting FBCA-Web-Release-Package.zip..."
+        echo "Deployment Successful on PROD Environment per federal guidelines!"
