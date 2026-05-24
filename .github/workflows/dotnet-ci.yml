@@ -1,0 +1,32 @@
+name: .NET Core 8.0 CI Pipeline
+
+# Triggers: Pipeline kab chale?
+on:
+  push:
+    branches: [ "main", "feature/*" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Kaam: Pipeline kya kare?
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: GitHub Runner par hamara code pull karna
+    - name: Checkout Repository Code
+      uses: actions/checkout@v4
+
+    # Step 2: Runner computer par .NET Core 8.0 environment set karna
+    - name: Setup .NET SDK 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # Step 3: Dependencies download karna (Day 2 core command!)
+    - name: Restore NuGet Packages
+      run: dotnet restore
+
+    # Step 4: Code ko automatically compile aur build karna
+    - name: Build Application Validation
+      run: dotnet build --no-restore

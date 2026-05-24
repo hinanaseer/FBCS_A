@@ -1,3 +1,1 @@
-// ASP.NET Core MVC Web Application - Version 5.11.2
-// Target Framework: .NET 8.0
-// Inactivity Session Timeout Config: 60 Days
+var builder = WebApplication.CreateBuilder(args); var app = builder.Build(); app.MapGet("/", () => "FBCA Live Deployment Simulation Successful!"); app.Run();
